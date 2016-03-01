@@ -1,9 +1,5 @@
 package gotext
 
-import (
-	"fmt"
-)
-
 var vowels = []rune{'a', 'A', 'e', 'E', 'i', 'I', 'o', 'O', 'u', 'U'}
 
 func is_standard_consonant(r rune) bool {
@@ -30,15 +26,11 @@ func contains_vowel(s string) bool {
 		r1 := runes[i-1]
 		r2 := runes[i]
 
-		fmt.Printf("r1=%s, r2=%s\n", string(r1), string(r2))
-
 		if !is_standard_consonant(r1) || !is_standard_consonant(r2) {
-			fmt.Printf("ooo -- r1=%s, r2=%s\n", string(r1), string(r2))
 			return true
 		}
 
 		if r2 == 'y' && is_standard_consonant(r1) {
-			fmt.Println("OOO -- r1=%s, r2=%s", string(r1), string(r2))
 			return true
 		}
 	}
