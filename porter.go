@@ -33,11 +33,48 @@ func make_literal_substitution(find string, replace string) LiteralSubstitution 
 	return sub
 }
 
+type NonNullWordLiteralSubstitution struct {
+	PorterRule
+
+	Suffix string
+	Replace string
+}
+
+func (nn NonNullWordLiteralSubstitution) Apply(str string) (string, error) {
+	s := strings.ToLower(str)
+	suf := strings.ToLower(nn.Suffix)
+
+	if strings.HasSuffix(s, suf) {
+		parts := strings.Split(s, suf)
+		if len(parts) > 1 {
+			prefix := strings.Join(parts, "")
+			// only 'non-null' words qualify for replacement
+			if contains_vowel(prefix) {
+				return prefix + nn.Replace, nil
+			}
+			return str, nil
+		}
+
+	}
+	return str, nil
+}
+
+func make_non_null_literal_sub(suffix, replace string) NonNullWordLiteralSubstitution {
+	nn := NonNullWordLiteralSubstitution{}
+	nn.Suffix = strings.ToLower(suffix)
+	nn.Replace = strings.ToLower(replace)
+	return nn
+}
+
 var step1a_rules = []PorterRule{
 	make_literal_substitution("SSES", "SS"),
 	make_literal_substitution("IES", "I"),
 	make_literal_substitution("SS", "SS"),
 	make_literal_substitution("S", ""),
+}
+
+var step1b_rules = []PorterRule{
+	make_non_null_literal_sub("EED", "EE"),
 }
 
 var default_porter_stem_rules =
